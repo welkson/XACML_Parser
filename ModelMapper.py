@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-import collections
-from pprint import pprint
-
 import xmltodict
 
 
