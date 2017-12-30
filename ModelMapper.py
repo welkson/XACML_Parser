@@ -370,8 +370,6 @@ def run2():
 
     # removendo atributo
     # policy.remove_any_of_by_name('http://wso2.org/claims/role')
-    # import ipdb
-    # ipdb.set_trace()
 
     # alterando nome da política
     # policy.properties.get('PolicyId').value = "Novo nome"
@@ -398,6 +396,10 @@ def run2():
     allof.add_match(match=match)
     anyof.add_all_of(all_of=allof)
     target.add_any_of(any_of=anyof)
+
+    # Outro exemplo: alterando atributo existente (papel support -> admin)
+    atributo = policy.get_match_by_value("http://wso2.org/claims/role")
+    atributo.attribute_value.value = 'SuperAdmin'
 
     print xmltodict.unparse(xmltodict.parse(policy.toXML()), full_document=False, pretty=True)
 
