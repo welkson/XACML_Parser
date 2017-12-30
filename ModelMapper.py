@@ -368,16 +368,16 @@ def run():
 def run2():
     policy = XACML.loads(filename='test.xml')
 
-    # removendo atributo
-    # policy.remove_any_of_by_name('http://wso2.org/claims/role')
-
     # alterando nome da política
     # policy.properties.get('PolicyId').value = "Novo nome"
+
+    # Exemplo 1: removendo atributo
+    # policy.remove_any_of_by_name('http://wso2.org/claims/role')
 
     # recupera target
     target = policy.rules[0].targets[0]
 
-    # adicionando novo atributo
+    # Exemplo 2: adicionando novo atributo
     anyof = AnyOf(parent=target)
     allof = AllOf(parent=anyof)
 
@@ -397,7 +397,7 @@ def run2():
     anyof.add_all_of(all_of=allof)
     target.add_any_of(any_of=anyof)
 
-    # Outro exemplo: alterando atributo existente (papel support -> admin)
+    # Exemplo 3: alterando atributo existente (papel support -> admin)
     atributo = policy.get_match_by_value("http://wso2.org/claims/role")
     atributo.attribute_value.value = 'SuperAdmin'
 
