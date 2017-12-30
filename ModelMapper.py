@@ -342,10 +342,7 @@ def run():
     anyof = AnyOf()
     allof = AllOf()
 
-    match = Match()
-    match.add_property(name='MatchId', value='urn:oasis:names:tc:xacml:1.0:function:string-equal')
-    match.attribute_value.value = '/new_ticket'
-    match.attribute_value.add_property(name='DataType', value='http://www.w3.org/2001/XMLSchema#string')
+
 
     match.attribute_designator.add_property(name='AttributeId', value='urn:oasis:names:tc:xacml:1.0:resource:resource-id')
     match.attribute_designator.add_property(name='Category', value='urn:oasis:names:tc:xacml:3.0:attribute-category:resource')
@@ -374,12 +371,38 @@ def run():
 def run2():
     policy = XACML.loads(filename='test.xml')
 
-    policy.remove_any_of_by_name('urn:oasis:names:tc:xacml:1.0:resource:resource-id')
+    # removendo atributo
+    # policy.remove_any_of_by_name('http://wso2.org/claims/role')
+    # import ipdb
+    # ipdb.set_trace()
 
-    print(policy.toXML())
+    # alterando nome da política
+    # policy.properties.get('PolicyId').value = "Novo nome"
 
+    # recupera target
+    target = policy.rules[0].targets[0]
 
+    # adicionando novo atributo
+    anyof = AnyOf(parent=target)
+    allof = AllOf(parent=anyof)
 
+    # define propriedades do novo atributo
+    match = Match(parent=allof)
+    match.add_property(name='MatchId', value='urn:oasis:names:tc:xacml:1.0:function:string-equal')
+    match.attribute_value.value = 'UserXYZ'
+    match.attribute_value.add_property(name='DataType', value='http://www.w3.org/2001/XMLSchema#string')
+
+    # definindo tipo do novo atributo
+    match.attribute_designator.add_property(name='AttributeId', value='urn:oasis:names:tc:xacml:1.0:subject:subject-id')
+    match.attribute_designator.add_property(name='Category', value='urn:oasis:names:tc:xacml:1.0:subject-category:access-subject')
+    match.attribute_designator.add_property(name='DataType', value='http://www.w3.org/2001/XMLSchema#string')
+    match.attribute_designator.add_property(name='MustBePresent', value='true')
+
+    allof.add_match(match=match)
+    anyof.add_all_of(all_of=allof)
+    target.add_any_of(any_of=anyof)
+
+    print xmltodict.unparse(xmltodict.parse(policy.toXML()), full_document=False, pretty=True)
 
 
 if __name__ == '__main__':
